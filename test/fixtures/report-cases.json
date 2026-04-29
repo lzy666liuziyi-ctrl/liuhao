@@ -1,0 +1,44 @@
+[
+  {
+    "name": "lichun boundary before 2/4",
+    "input": {
+      "birthDate": "1990-01-01",
+      "predictDate": "2026-01-25",
+      "gender": "男",
+      "rules": { "yearBoundary": "lichun" }
+    },
+    "expect": {
+      "birthYear": 1989,
+      "currentYear": 2025,
+      "yearBoundaryUsed": "lichun"
+    }
+  },
+  {
+    "name": "dahan boundary after 1/20",
+    "input": {
+      "birthDate": "1990-01-01",
+      "predictDate": "2026-01-25",
+      "gender": "男",
+      "rules": { "yearBoundary": "dahan" }
+    },
+    "expect": {
+      "birthYear": 1989,
+      "currentYear": 2026,
+      "yearBoundaryUsed": "dahan"
+    }
+  },
+  {
+    "name": "newyear boundary always current calendar year",
+    "input": {
+      "birthDate": "1990-01-01",
+      "predictDate": "2026-01-01",
+      "gender": "男",
+      "rules": { "yearBoundary": "newyear" }
+    },
+    "expect": {
+      "birthYear": 1990,
+      "currentYear": 2026,
+      "yearBoundaryUsed": "newyear"
+    }
+  }
+]
