@@ -1,4 +1,4 @@
-import { analyzeByDate, currentQi, getQiAtStep, getYearForWuyun, keZhuJiaLinDetail } from './wuyun';
+import { analyzeByDate, currentQi, getQiAtStep, getYearForWuyunWithConfig, keZhuJiaLinDetail } from './wuyun';
 import { xianTianTiZhi } from './tizhi';
 import { findFangJi, findWuYunFang } from './fangji';
 import type { GeneratedReport } from './app-types';
@@ -6,11 +6,16 @@ import { DEFAULT_RULES, type WuyunRules } from './rules';
 import { ReportInputError } from './errors';
 import { ENGINE_NAME, ENGINE_VERSION } from './meta';
 
+export interface GenerateRuleInput {
+  yearBoundary?: WuyunRules['yearBoundary'];
+  boundaryConfig?: Partial<WuyunRules['boundaryConfig']>;
+}
+
 export interface GenerateInput {
   birthDate: string; // YYYY-MM-DD
   predictDate: string; // YYYY-MM-DD
   gender?: '男' | '女';
-  rules?: Partial<WuyunRules>;
+  rules?: GenerateRuleInput;
 }
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -62,13 +67,20 @@ export function generateReport(input: GenerateInput): GeneratedReport {
   const birth = mustDate('birthDate', input.birthDate);
   const predict = mustDate('predictDate', input.predictDate);
 
-  const rules: WuyunRules = { ...DEFAULT_RULES, ...(input.rules ?? {}) };
+  const rules: WuyunRules = {
+    ...DEFAULT_RULES,
+    ...(input.rules ?? {}),
+    boundaryConfig: {
+      ...DEFAULT_RULES.boundaryConfig,
+      ...(input.rules?.boundaryConfig ?? {}),
+    },
+  };
 
-  const birthYear = getYearForWuyun(birth, rules.yearBoundary);
-  const currentYear = getYearForWuyun(predict, rules.yearBoundary);
+  const birthYear = getYearForWuyunWithConfig(birth, rules.yearBoundary, rules.boundaryConfig);
+  const currentYear = getYearForWuyunWithConfig(predict, rules.yearBoundary, rules.boundaryConfig);
 
-  const birthResult = analyzeByDate(birth, rules.yearBoundary);
-  const currentResult = analyzeByDate(predict, rules.yearBoundary);
+  const birthResult = analyzeByDate(birth, rules.yearBoundary, rules.boundaryConfig);
+  const currentResult = analyzeByDate(predict, rules.yearBoundary, rules.boundaryConfig);
 
   const tizhi = xianTianTiZhi(
     birthResult.gz.gan,

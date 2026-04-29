@@ -1,3 +1,5 @@
+import type { YearBoundaryConfig } from './rules';
+
 /**
  * 五运六气核心计算引擎 v2.1
  * 目标：在保持你原始口径的前提下，提供可维护、可类型检查的实现。
@@ -330,14 +332,21 @@ export function getQiAtStep(zhi: DiZhi, qiIndex: number) {
 }
 
 export function getYearForWuyun(date: Date, boundary: 'dahan' | 'lichun' | 'newyear' = 'dahan'): number {
+  return getYearForWuyunWithConfig(date, boundary, { dahanDay: 21, lichunDay: 4 });
+}
+
+export function getYearForWuyunWithConfig(
+  date: Date,
+  boundary: 'dahan' | 'lichun' | 'newyear',
+  config: YearBoundaryConfig,
+): number {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
   if (boundary === 'newyear') return year;
-  if (boundary === 'dahan') return month === 1 && day < 21 ? year - 1 : year;
-  // 立春近似切点：2月4日（MVP 近似；后续可接入精确节气时刻）
-  return month < 2 || (month === 2 && day < 4) ? year - 1 : year;
+  if (boundary === 'dahan') return month === 1 && day < config.dahanDay ? year - 1 : year;
+  return month < 2 || (month === 2 && day < config.lichunDay) ? year - 1 : year;
 }
 
 export function analyze(year: number, date?: Date) {
@@ -356,7 +365,7 @@ export function analyze(year: number, date?: Date) {
   return { year, gz, zy, stzq, zyun, kyun, zqi, kqi, jialin, th, cq, dg, shengXiao: ZHI_ATTR[gz.zhi].animal };
 }
 
-export function analyzeByDate(date: Date, boundary: 'dahan' | 'lichun' | 'newyear' = 'dahan') {
-  const year = getYearForWuyun(date, boundary);
+export function analyzeByDate(date: Date, boundary: 'dahan' | 'lichun' | 'newyear' = 'dahan', config: YearBoundaryConfig = { dahanDay: 21, lichunDay: 4 }) {
+  const year = getYearForWuyunWithConfig(date, boundary, config);
   return analyze(year, date);
 }

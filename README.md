@@ -52,6 +52,7 @@ npm run cli -- --birth 1990-01-01 --predict 2026-04-28 --boundary dahan --json
 
 - `generateReport({ birthDate, predictDate, gender, rules })` -> `GeneratedReport`
 - 返回值含 `meta`（engine/version/generatedAt）用于日志追踪
+- `rules.boundaryConfig` 可自定义切换日（`dahanDay`/`lichunDay`）
 
 ### 方式 B（输入不可信场景）
 使用安全返回，避免 try/catch 分支污染页面逻辑：
@@ -65,7 +66,7 @@ npm run cli -- --birth 1990-01-01 --predict 2026-04-28 --boundary dahan --json
 
 ## 自动化测试
 
-- `test/generator.test.mjs` + `test/wuyun-reference.test.mjs` + `test/report-fixtures.test.mjs` + `test/meta-version.test.mjs` 覆盖 21 类基础回归：
+- `test/generator.test.mjs` + `test/wuyun-reference.test.mjs` + `test/report-fixtures.test.mjs` + `test/meta-version.test.mjs` 覆盖 22 类基础回归：
   - 有效输入返回关键字段（birthYear/currentYear/yearBoundaryUsed）
   - 非法日期通过 `generateReportSafe` 返回结构化错误
   - `dahan/lichun` 口径在 1 月边界日期上的差异

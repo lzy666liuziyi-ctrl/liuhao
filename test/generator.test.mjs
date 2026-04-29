@@ -84,3 +84,15 @@ test('validateInput returns multiple errors without throwing', () => {
   assert.equal(errors[0].field, 'birthDate');
   assert.equal(errors[1].field, 'predictDate');
 });
+
+
+test('custom boundaryConfig works (dahanDay=20)', () => {
+  const report = generateReport({
+    birthDate: '1990-01-01',
+    predictDate: '2026-01-20',
+    gender: '男',
+    rules: { yearBoundary: 'dahan', boundaryConfig: { dahanDay: 20 } },
+  });
+
+  assert.equal(report.currentYear, 2026);
+});
