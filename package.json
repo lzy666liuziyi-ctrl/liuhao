@@ -1,0 +1,28 @@
+{
+  "name": "wuyunliuqi-engine",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "demo": "node dist/demo.js",
+    "test": "npm run build && node --test test/**/*.mjs",
+    "cli": "npm run build && node dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./generator": {
+      "types": "./dist/types/lib/generator.d.ts",
+      "default": "./dist/lib/generator.js"
+    },
+    "./cli": {
+      "types": "./dist/types/cli.d.ts",
+      "default": "./dist/cli.js"
+    }
+  }
+}
